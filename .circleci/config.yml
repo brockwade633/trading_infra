@@ -20,8 +20,8 @@ jobs:
           name: Install awscli
           command: pip install awscli
       - run:
-          name: Check awscli version
-          command: aws --version
+          name: Deploy Cloud Formation Template
+          command: aws cloudformation deploy --template-file ./fargatecluster_cfn.yaml --stack-name tradingCluster --capabilities CAPABILITY_IAM
 
 workflows:
   version: 2
