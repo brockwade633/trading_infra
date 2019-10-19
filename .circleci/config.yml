@@ -6,7 +6,6 @@ jobs:
     
     steps:
       - checkout
-
       - run:
           name: Print Repo Contents
           command: ls -la
@@ -16,6 +15,7 @@ jobs:
       - image: python:3.7-stretch
    
     steps:
+      - checkout
       - run:
           name: Install awscli
           command: pip install awscli
