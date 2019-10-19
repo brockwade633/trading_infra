@@ -17,20 +17,25 @@ jobs:
     
     steps:
       - run:
-        name: Install awscli
-        command: sudo pip install awscli
+          name: Install awscli
+          command: sudo pip install awscli
       - run:
-        name: Check awscli version
-        command: aws --version
+          name: Check awscli version
+          command: aws --version
 
 workflows:
   version: 2
   build-deploy:
     jobs:
-      - build
+      - build:
+        requires:
+            - build
+          filters:
+            branches:
+              only: master
       - deploy:
         requires:
-          - build
-        filters:
-          branches:
-            only: master
+            - build
+          filters:
+            branches:
+              only: master
