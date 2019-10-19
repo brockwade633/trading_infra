@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  deploy:
+  deploy_cfn:
     docker:
       - image: python:3.7-stretch
     steps:
@@ -14,3 +14,12 @@ jobs:
       - run:
           name: Deploy Fargate Cluster Infra Stack
           command: aws cloudformation deploy --template-file ./fargatecluster_cfn.yaml --stack-name tradingCluster -capabilities CAPABILITY_IAM
+
+workflows:
+  version: 2
+  deploy_fargate_infra_stack:
+    jobs:
+      - deploy_cfn:
+          filters:
+            branches:
+              only: master
