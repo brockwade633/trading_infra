@@ -12,7 +12,7 @@ jobs:
           name: Install awscli
           command: pip install awscli
       - run:
-          name: Deploy Fargate Cluster Infra Stack
+          name: Deploy AWS Fargate Cluster Infra Stack
           command: aws cloudformation deploy --template-file ./fargatecluster_cfn.yaml --stack-name tradingCluster -capabilities CAPABILITY_IAM
 
 workflows:
