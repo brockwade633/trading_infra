@@ -8,6 +8,10 @@ Parameters:
     Type: String
     Default: PROD
     Description: "Your deployment environment"
+  StackName:
+    Type: String
+    Default: tradingCluster
+    Description: "Name of the stack"
       
 Resources:
   # VPC in which containers will be networked.
@@ -180,34 +184,34 @@ Outputs:
     Description: The name of the ECS cluster
     Value: !Ref 'ECSCluster'
     Export:
-      Name: !Sub ClusterName
+      Name: !Sub ${StackName}:ClusterName
   AutoscalingRole:
     Description: The ARN of the role used for autoscaling
     Value: !GetAtt 'AutoscalingRole.Arn'
     Export:
-      Name: AutoscalingRole
+      Name: !Sub ${StackName}:AutoscalingRole
   ECSRole:
     Description: The ARN of the ECS role
     Value: !GetAtt 'ECSRole.Arn'
     Export:
-      Name: ECSRole
+      Name: !Sub ${StackName}:ECSRole
   ECSTaskExecutionRole:
     Description: The ARN of the ECS role
     Value: !GetAtt 'ECSTaskExecutionRole.Arn'
     Export:
-      Name: ECSTaskExecutionRole
+      Name: !Sub ${StackName}:ECSTaskExecutionRole
   VpcId:
     Description: The ID of the VPC that this stack is deployed in
     Value: !Ref 'VPC'
     Export:
-      Name: VpcId
+      Name: !Sub ${StackName}:VpcId
   PrivateSubnet:
     Description: Private subnet
     Value: !Ref 'PrivateSubnet'
     Export:
-      Name: PrivateSubnet
+      Name: !Sub ${StackName}:PrivateSubnet
   ContainerSecurityGroup:
     Description: A security group used to allow Fargate containers to receive traffic
     Value: !Ref 'ContainerSecurityGroup'
     Export:
-      Name: ContainerSecurityGroup
+      Name: !Sub ${StackName}:ContainerSecurityGroup
