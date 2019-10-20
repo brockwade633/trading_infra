@@ -136,14 +136,6 @@ Resources:
               - 'ec2:DeleteNetworkInterfacePermission'
               - 'ec2:Describe*'
               - 'ec2:DetachNetworkInterface'
-
-              # Rules which allow ECS to update load balancers on your behalf
-              # with the information sabout how to send traffic to your containers
-              - 'elasticloadbalancing:DeregisterInstancesFromLoadBalancer'
-              - 'elasticloadbalancing:DeregisterTargets'
-              - 'elasticloadbalancing:Describe*'
-              - 'elasticloadbalancing:RegisterInstancesWithLoadBalancer'
-              - 'elasticloadbalancing:RegisterTargets'
             Resource: '*'
 
   # This is a role which is used by the ECS tasks themselves.
