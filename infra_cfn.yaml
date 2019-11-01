@@ -49,15 +49,7 @@ Resources:
       - Key: Name
         Value: PublicSubnet
 
-  # Gateways
-  TCInternetGateway:
-    Type: AWS::EC2::InternetGateway
-    Properties:
-      Tags:
-      - Key: Name
-        Value: TCInternetGateway
-
-  # Route Tables
+  # Private Route Table, Associations, and Routes
   PrivateRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
@@ -65,6 +57,20 @@ Resources:
       Tags:
       - Key: Name
         Value: PrivateRouteTable
+  PrivateSubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref 'PrivateSubnet'
+      RouteTableId: !Ref 'PrivateRouteTable'
+  PrivateRoute:
+    Type: AWS::EC2::Route
+    DependsOn: TCNatGateway
+    Properties:
+      RouteTableId: !Ref 'PrivateRouteTable'
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref 'TCNatGateway'
+
+  # Public Route Table, Associations, and Routes
   PublicRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
@@ -72,3 +78,46 @@ Resources:
       Tags:
       - Key: Name
         Value: PublicRouteTable
+  PublicSubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref 'PublicSubnet'
+      RouteTableId: !Ref 'PublicRouteTable'
+  PublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: TCInternetGateway
+    Properties:
+      RouteTableId: !Ref 'PublicRouteTable'
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref 'TCInternetGateway'
+
+  # ElasticIP
+  EIP:
+    Type: AWS::EC2::EIP
+    DependsOn: AttachVPCandIG
+    Properties:
+      Domain: vpc
+
+  # Gateways and Attachments
+  TCInternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+      - Key: Name
+        Value: TCInternetGateway
+  AttachVPCandIG:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref 'TCVPC'
+      InternetGatewayId: !Ref 'TCInternetGateway'
+  TCNatGateway:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId:
+        Fn::GetAtt:
+        - EIP
+        - AllocationId
+      SubnetId: !Ref 'PublicSubnet'
+      Tags:
+      - Key: Name
+        Value: TCNatGateway
