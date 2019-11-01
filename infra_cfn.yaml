@@ -1,0 +1,74 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CFN template that describes the underlying infrastructure stack that will support the 
+             Fargate trading cluster. Contains a VPC with a Private and Public Subnet. Internet access
+             is setup through an Internet Gateway, and a NAT Gateway routes requests from the Private Subnet 
+             to the Public, and up through the Internet Gateway. 
+Parameters:
+  StackName:
+    Type: String
+    Default: TC
+    Description: The name of the infra stack, TC (Trading Cluster).
+
+
+Resources:
+
+  # VPC
+  TCVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      InstanceTenancy: default
+      EnableDnsSupport: 'true'
+      EnableDnsHostnames: 'false'
+      Tags:
+      - Key: Name
+        Value: TCVPC
+
+  # Subnets
+  PrivateSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.0.0/24
+      AvailabilityZone: !Select
+        - 0
+        - Fn::GetAZs: !Ref 'AWS::Region'
+      VpcId: !Ref 'TCVPC'
+      Tags:
+      - Key: Name
+        Value: PrivateSubnet
+  PublicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.1.0/24
+      AvailabilityZone: !Select
+        - 0
+        - Fn::GetAZs: !Ref 'AWS::Region'
+      VpcId: !Ref 'TCVPC'
+      Tags:
+      - Key: Name
+        Value: PublicSubnet
+
+  # Gateways
+  TCInternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+      - Key: Name
+        Value: TCInternetGateway
+
+  # Route Tables
+  PrivateRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref 'TCVPC'
+      Tags:
+      - Key: Name
+        Value: PrivateRouteTable
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref 'TCVPC'
+      Tags:
+      - Key: Name
+        Value: PublicRouteTable
