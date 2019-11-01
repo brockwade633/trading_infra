@@ -68,7 +68,7 @@ Resources:
     Properties:
       RouteTableId: !Ref 'PrivateRouteTable'
       DestinationCidrBlock: 0.0.0.0/0
-      GatewayId: !Ref 'TCNatGateway'
+      NatGatewayId: !Ref 'TCNatGateway'
 
   # Public Route Table, Associations, and Routes
   PublicRouteTable:
