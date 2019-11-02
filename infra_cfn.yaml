@@ -7,7 +7,7 @@ Description: CFN template that describes the underlying infrastructure stack tha
 Parameters:
   StackName:
     Type: String
-    Default: TC
+    Default: TCInfra
     Description: The name of the infra stack, TC (Trading Cluster).
 
 
