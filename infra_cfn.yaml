@@ -160,7 +160,7 @@ Resources:
               - 'servicediscovery:RegisterInstance'
               - 'servicediscovery:UpdateInstanceCustomHealthStatus'
             Resource: '*'
-          - Sid: ECSTaskManagement
+          - Sid: ECSTags
             Effect: Allow
             Action:
               - 'ec2:CreateTags'
