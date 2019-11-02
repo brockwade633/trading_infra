@@ -168,8 +168,8 @@ Resources:
           - Sid: CWLogGroupManagement
             Effect: Allow
             Action:
-              - 'logs:CreateLogGroup',
-              - 'logs:DescribeLogGroups',
+              - 'logs:CreateLogGroup'
+              - 'logs:DescribeLogGroups'
               - 'logs:PutRetentionPolicy'
             Resource: 'arn:aws:logs:*:*:log-group:/aws/ecs/*'
           - Sid: CWLogStreamManagement
