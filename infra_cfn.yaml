@@ -125,87 +125,6 @@ Resources:
   # ECS Resources
   ECSCluster:
     Type: AWS::ECS::Cluster
-
-  # Define an ECS Service role to enable ECS to manage the trading cluster
-  ECSServiceRole:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Statement:
-        - Effect: Allow
-          Principal:
-            Service: [ecs.amazonaws.com]
-          Action: ['sts:AssumeRole']
-      Path: /
-      Policies:
-      - PolicyName: ecs-service
-        PolicyDocument:
-          Statement:
-          # Rules which allow ECS to attach network interfaces to instances
-          # on your behalf in order for awsvpc networking mode to work right,
-          # as well as service discovery and logging
-          - Sid: ECSTaskManagement
-            Effect: Allow
-            Action:
-              - 'ec2:AttachNetworkInterface'
-              - 'ec2:CreateNetworkInterface'
-              - 'ec2:CreateNetworkInterfacePermission'
-              - 'ec2:DeleteNetworkInterface'
-              - 'ec2:DeleteNetworkInterfacePermission'
-              - 'ec2:Describe*'
-              - 'ec2:DetachNetworkInterface'
-              - 'servicediscovery:DeregisterInstance'
-              - 'servicediscovery:Get*'
-              - 'servicediscovery:List*'
-              - 'servicediscovery:RegisterInstance'
-              - 'servicediscovery:UpdateInstanceCustomHealthStatus'
-            Resource: '*'
-          - Sid: ECSTags
-            Effect: Allow
-            Action:
-              - 'ec2:CreateTags'
-            Resource: 'arn:aws:ec2:*:*:network-interface/*'
-          - Sid: CWLogGroupManagement
-            Effect: Allow
-            Action:
-              - 'logs:CreateLogGroup'
-              - 'logs:DescribeLogGroups'
-              - 'logs:PutRetentionPolicy'
-            Resource: 'arn:aws:logs:*:*:log-group:/aws/ecs/*'
-          - Sid: CWLogStreamManagement
-            Effect: Allow
-            Action:
-              - 'logs:CreateLogStream'
-              - 'logs:DescribeLogsStreams'
-              - 'logs:PutLogEvents'
-            Resource: 'arn:aws:logs:*:*:log-group:/aws/ecs/*:log-stream:*'
-
-  # Define an ECS task execution role to allow future tasks to download images, write to cloudwatch, etc.
-  ECSTaskExecutionRole:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Statement:
-        - Effect: Allow
-          Principal:
-            Service: [ecs-tasks.amazonaws.com]
-          Action: ['sts:AssumeRole']
-      Path: /
-      Policies:
-        - PolicyName: AmazonECSTaskExecutionRolePolicy
-          PolicyDocument:
-            Statement:
-            - Effect: Allow
-              Action:
-                # Allow the ECS Tasks to download images from ECR
-                - 'ecr:GetAuthorizationToken'
-                - 'ecr:BatchCheckLayerAvailability'
-                - 'ecr:GetDownloadUrlForLayer'
-                - 'ecr:BatchGetImage'
-                - 'logs:CreateLogStream'
-                - 'logs:PutLogEvents'
-              Resource: '*'
-
   
 Outputs:
   VPC:
@@ -223,13 +142,3 @@ Outputs:
     Value: !Ref 'ECSCluster'
     Export:
       Name: !Sub ${StackName}:ClusterName
-  ECSServiceRole:
-    Description: Name of IAM role allowing ECS to manage cluster
-    Value: !Ref 'ECSServiceRole'
-    Export:
-      Name: !Sub ${StackName}:ECSServiceRole
-  ECSTaskRole:
-    Description: Name of IAM role allowing ECS tasks to perform actions
-    Value: !Ref 'ECSTaskExecutionRole'
-    Export:
-      Name: !Sub ${StackName}:ECSTaskExecutionRole
