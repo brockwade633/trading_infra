@@ -175,6 +175,6 @@ Outputs:
       Name: !Sub ${StackName}:ECSTaskExecutionRole
   ECSTaskExecutionRoleArn:
     Description: The name of execution role
-    Value: !Ref 'ECSTaskExecutionRole.Arn'
+    Value: !GetAtt ECSTaskExecutionRole.Arn
     Export:
       Name: !Sub ${StackName}:ECSTaskExecutionRoleArn
