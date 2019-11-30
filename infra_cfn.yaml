@@ -168,6 +168,11 @@ Outputs:
     Value: !Ref 'ECSCluster'
     Export:
       Name: !Sub ${StackName}:ClusterName
+  ClusterNameArn:
+    Description: The name of the ECS cluster
+    Value: !GetAtt ECSCluster.Arn
+    Export:
+      Name: !Sub ${StackName}:ClusterNameArn
   ECSTaskExecutionRole:
     Description: The name of execution role
     Value: !Ref 'ECSTaskExecutionRole'
