@@ -151,6 +151,16 @@ Resources:
                 - 'logs:CreateLogStream'
                 - 'logs:PutLogEvents'
               Resource: '*'
+
+  # S3 bucket to store info such as trading history 
+  StorageBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: TradingArtifacts
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
   
 Outputs:
   VPC:
@@ -183,3 +193,8 @@ Outputs:
     Value: !GetAtt ECSTaskExecutionRole.Arn
     Export:
       Name: !Sub ${StackName}:ECSTaskExecutionRoleArn
+  StorageBucket:
+    Description: S3 bucket that stores trading artifacts
+    Value: !Ref 'StorageBucket'
+    Export:
+      Name: !Sub ${StackName}:StorageBucket
