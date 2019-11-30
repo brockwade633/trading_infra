@@ -125,6 +125,32 @@ Resources:
   # ECS Resources
   ECSCluster:
     Type: AWS::ECS::Cluster
+
+  # Task execution role, allows the ECS task to interact with other services
+  ECSTaskExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: [ecs-tasks.amazonaws.com]
+          Action: ['sts:AssumeRole']
+      Path: /
+      Policies:
+        - PolicyName: AmazonECSTaskExecutionRolePolicy
+          PolicyDocument:
+            Statement:
+            - Effect: Allow
+              Action:
+                # Allow the ECS Tasks to download images from ECR
+                - 'ecr:GetAuthorizationToken'
+                - 'ecr:BatchCheckLayerAvailability'
+                - 'ecr:GetDownloadUrlForLayer'
+                - 'ecr:BatchGetImage'
+                - 'logs:CreateLogStream'
+                - 'logs:PutLogEvents'
+              Resource: '*'
   
 Outputs:
   VPC:
@@ -142,3 +168,8 @@ Outputs:
     Value: !Ref 'ECSCluster'
     Export:
       Name: !Sub ${StackName}:ClusterName
+  ECSTaskExecutionRole:
+    Description: The name of execution role
+    Value: !Ref 'ECSTaskExecutionRole'
+    Export:
+      Name: !Sub ${StackName}:ECSTaskExecutionRole
