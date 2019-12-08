@@ -150,6 +150,7 @@ Resources:
                 - 'ecr:BatchGetImage'
                 - 'logs:CreateLogStream'
                 - 'logs:PutLogEvents'
+                - 'secretsmanager:GetSecretValue'
               Resource: '*'
 
   # S3 bucket to store info such as trading history 
